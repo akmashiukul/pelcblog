@@ -1,7 +1,7 @@
 from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView
-from .models import Post, Categories, PostComment
+from .models import Post, Categories, PostComment,Question
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -23,7 +23,13 @@ class blog(ListView):
       context["cat_list"] = cat_list
       context["latestpost_list"] = latestpost_list
       return context
-
+def question(request):
+   if request.method=="POST":
+        question = request.POST.get('question', '')
+        class_name = request.POST.get('class_name', '')
+        question = Question(sender=request.user, question=question,class_name=class_name)
+        question.save()
+   return render(request,"question.html")
 def search(request):
    template = 'search_list.html'
    query = request.GET.get('q')
